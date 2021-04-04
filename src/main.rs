@@ -19,6 +19,9 @@ use crate::words_counter::counter;
 struct Opts {
     #[clap(name = "FILE")]
     file: Option<PathBuf>,
+
+    #[clap(short = 's', long)]
+    skip_header: bool,
 }
 
 fn main () -> Result<()> {
@@ -27,7 +30,7 @@ fn main () -> Result<()> {
     if let Some(path) = opts.file {
         let f = File::open(path)?;
         let reader = BufReader::new(f);
-        counter::run(reader)
+        counter::run(reader, opts.skip_header)
     } else {
         bail!("No file detected. Please pass CSV file.")
     }
