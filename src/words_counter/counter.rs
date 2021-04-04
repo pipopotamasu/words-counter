@@ -2,16 +2,15 @@ use std::io::BufRead;
 use anyhow::Result;
 use std::collections::HashMap;
 
-pub fn run<R: BufRead>(reader: R, skip_header: bool) -> Result<()> {
+pub fn run<R: BufRead>(mut reader: R, skip_header: bool) -> Result<()> {
   let mut counter: HashMap<String, u32> = HashMap::new();
-  let mut skipped = false;
+
+  if skip_header {
+    let mut buf = String::new();
+    reader.read_line(&mut buf).unwrap_err();
+  }
 
   for line in reader.lines() {
-      if skip_header && !skipped {
-        skipped = true;
-        continue;
-      }
-
       let l = line?;
       let word = l.split(",").collect::<Vec<&str>>()[0];
 
